@@ -52,7 +52,6 @@ const Question = ({ mongoUserId }: Props) => {
       path: pathname,
     });
     router.push("/");
-    console.log(values);
   }
 
   const handleInputKeyDown = (

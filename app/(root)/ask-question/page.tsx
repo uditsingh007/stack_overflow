@@ -9,7 +9,6 @@ const Page = async () => {
   const userId = "user123";
   if (!userId) redirect("/sign-in");
   const user = await getUserById({ userId });
-  console.log(user, "user");
   return (
     <div>
       <h1 className="h1-bold text-dark100_light900">Ask a question</h1>
