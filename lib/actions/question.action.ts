@@ -7,12 +7,14 @@ import { revalidatePath } from "next/cache";
 import {
   AnswerVoteParams,
   CreateQuestionParams,
+  DeleteQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 
 export const getQuestions = async (params: GetQuestionsParams) => {
   try {
@@ -193,6 +195,25 @@ export const downvoteAnswer = async (params: AnswerVoteParams) => {
     if (!answer) {
       throw new Error("Answer not found");
     }
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const deleteQuestion = async (params: DeleteQuestionParams) => {
+  try {
+    connectToDatabase();
+    const { path, questionId } = params;
+
+    await Question.deleteOne({ _id: questionId });
+    await Answer.deleteMany({ question: questionId });
+    await Interaction.deleteMany({ question: questionId });
+    await Tag.updateMany(
+      { question: questionId },
+      { $pull: { questions: questionId } }
+    );
     revalidatePath(path);
   } catch (error) {
     console.log(error);
