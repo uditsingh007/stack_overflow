@@ -6,7 +6,6 @@ import { URLProps } from "@/types";
 
 const Page = async ({ params }: URLProps) => {
   const result = await getQuestionsByTagId({ tagId: params.id });
-  console.log(result, "result");
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">{result.tagTitle}</h1>

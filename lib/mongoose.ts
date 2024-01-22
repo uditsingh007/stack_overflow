@@ -9,7 +9,7 @@ export const connectToDatabase = async () => {
   }
 
   if (isConnected) {
-    return console.log("Already connected");
+    return;
   }
 
   try {
@@ -17,7 +17,6 @@ export const connectToDatabase = async () => {
       dbName: "devflow",
     });
     isConnected = true;
-    console.log("MongoDB is connected");
   } catch (error) {
     console.log(error);
   }

@@ -8,6 +8,7 @@ import {
   AnswerVoteParams,
   CreateQuestionParams,
   DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
@@ -214,6 +215,29 @@ export const deleteQuestion = async (params: DeleteQuestionParams) => {
       { question: questionId },
       { $pull: { questions: questionId } }
     );
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const editQuestion = async (params: EditQuestionParams) => {
+  try {
+    connectToDatabase();
+    const { path, questionId, content, title } = params;
+
+    const question = await Question.findById(questionId);
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    question.title = title;
+    question.content = content;
+
+    await question.save();
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);

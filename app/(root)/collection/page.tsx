@@ -11,7 +11,6 @@ const Page = async () => {
   const { userId } = auth();
   if (!userId) return;
   const result = await getSavedQuestions({ clerkId: userId });
-  console.log(result, "result");
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">Saved Questions</h1>

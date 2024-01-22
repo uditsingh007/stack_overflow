@@ -53,7 +53,7 @@ export const deleteAnswer = async (params: DeleteAnswerParams) => {
     const answer = Answer.findOne({ _id: answerId });
 
     if (!answer) {
-      return console.log("Answer not found");
+      throw new Error("Answer not found");
     }
 
     await answer.deleteOne({ _id: answerId });
