@@ -21,7 +21,7 @@ export const viewQuestion = async (params: ViewQuestionParams) => {
       });
 
       if (existingInteraction) {
-        return console.log("Already viewed");
+        return;
       }
 
       await Interaction.create({
