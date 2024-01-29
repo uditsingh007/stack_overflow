@@ -87,6 +87,16 @@ export const createQuestion = async (params: CreateQuestionParams) => {
     await Question.findByIdAndUpdate(question._id, {
       $push: { tags: { $each: tagDocuments } },
     });
+
+    await Interaction.create({
+      user: author,
+      action: "ask_question",
+      question: question._id,
+      tags: tagDocuments,
+    });
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -135,6 +145,14 @@ export const upvoteQuestion = async (params: QuestionVoteParams) => {
     if (!question) {
       throw new Error("Question not found");
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -1 : 1 },
+    });
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 },
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -166,6 +184,15 @@ export const upvoteAnswer = async (params: AnswerVoteParams) => {
     if (!answer) {
       throw new Error("Answer not found");
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -2 : 2 },
+    });
+
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 },
+    });
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -197,6 +224,14 @@ export const downvoteQuestion = async (params: QuestionVoteParams) => {
     if (!question) {
       throw new Error("Question not found");
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? -2 : 2 },
+    });
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasdownVoted ? -10 : 10 },
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -228,6 +263,14 @@ export const downvoteAnswer = async (params: AnswerVoteParams) => {
     if (!answer) {
       throw new Error("Answer not found");
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? -2 : 2 },
+    });
+
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasdownVoted ? -10 : 10 },
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
